@@ -13,12 +13,21 @@ public class Consumer implements Runnable {
     }
 
     public void answerQuestion() throws InterruptedException {
+
+        /*
+         while the List is empty, wait for the other thread to fill it with items,
+         it will wake you up
+         */
         synchronized (questionList) {
             while (questionList.isEmpty()) {
                 System.out.println("No Questions to Answer...waiting for Producer to get questions");
                 questionList.wait();
             }
         }
+        /*
+         wake up by the other thread, remove an item from the List and prints it to the console
+         wake up the other thread via 'notify()'
+         */
         synchronized (questionList) {
             Thread.sleep(5000);
             System.out.println("Answered Question: " + questionList.remove(0));
