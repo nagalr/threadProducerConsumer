@@ -15,18 +15,27 @@ public class Producer implements Runnable {
     public void readQuestion(int questionNo) throws InterruptedException {
         synchronized (questionList) {
             while (questionList.size() == LIMIT) {
-                System.out.println("Questions has benn piled put.. please wait for answers");
+                System.out.println("Questions has been piled put.. please wait for answers");
                 questionList.wait();
             }
         }
-        synchronized (questionList){
+        synchronized (questionList) {
             System.out.println("New Question: " + questionNo);
             questionList.add(questionNo);
+            Thread.sleep(100);
+            questionList.notify();
         }
     }
 
     @Override
     public void run() {
 
+        while (true) {
+            try {
+                readQuestion(questionNo++);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
